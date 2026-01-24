@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #10B981;
+  --color-secondary: #34D399;
+  --color-background: #F0FDF4;
+  --color-surface: #FFFFFF;
+  --color-text: #1F2937;
+  --color-textLight: #6B7280;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2;
+  }
+
+  .card {
+    @apply bg-white p-5 rounded-2xl shadow-md border border-gray-100;
+  }
+
+  .touch-target {
+    @apply min-h-[48px] min-w-[48px] flex items-center justify-center;
+  }
+}
+
+/* Mobile-first text sizing */
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
