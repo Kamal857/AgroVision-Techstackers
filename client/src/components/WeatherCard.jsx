@@ -1,74 +1,93 @@
-import { useState } from 'react';
-import { CloudRain, Sun, Cloud, Wind, Droplets, Thermometer, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CloudRain, Sun, Cloud, Wind, Droplets, Thermometer, Loader2, MapPin } from 'lucide-react';
+import axios from 'axios';
 
 const WeatherCard = () => {
-    // Demo Data
-    const weather = {
-        location: "Dhangadhi",
-        current: {
-            temp: 17,
-            condition: "Rainy",
-            humidity: 98,
-            windSpeed: 14
-        },
-        forecast: [
-            { day: "Sat", temp: 23, condition: "Rainy" },
-            { day: "Sun", temp: 25, condition: "Sunny" },
-            { day: "Mon", temp: 22, condition: "Cloudy" },
-            { day: "Tue", temp: 23, condition: "Rainy" },
-            { day: "Wed", temp: 20, condition: "Rainy" }
-        ]
+    const [weather, setWeather] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchWeather = async () => {
+            try {
+                const res = await axios.get('/api/weather');
+                setWeather(res.data);
+            } catch (err) {
+                console.error("Error fetching weather:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWeather();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="card-premium h-full flex items-center justify-center p-8 bg-white">
+                <Loader2 className="animate-spin text-emerald-600" size={24} />
+            </div>
+        );
+    }
+
+    if (!weather) return null;
+
+    const getWeatherIcon = (condition) => {
+        const c = condition?.toLowerCase();
+        if (c?.includes('rain')) return <CloudRain size={20} className="text-blue-500" />;
+        if (c?.includes('cloud')) return <Cloud size={20} className="text-slate-400" />;
+        return <Sun size={20} className="text-amber-500" />;
     };
 
     return (
-        <div className="bg-[#38BDF8] rounded-[32px] p-6 text-white shadow-xl relative overflow-hidden h-full">
-            <div className="flex justify-between items-start z-10 relative mb-8">
-                <div>
-                    <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full inline-flex items-center gap-2 mb-4 cursor-pointer hover:bg-white/30 transition-colors">
-                        <span className="text-sm font-semibold">📍 {weather.location}</span>
-                        <ChevronDown size={14} />
+        <div className="card-premium bg-white flex flex-col">
+            {/* Top Bar - More Compact */}
+            <div className="p-4 pb-2 flex justify-between items-start">
+                <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 text-slate-400">
+                        <MapPin size={10} className="text-emerald-600" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">{weather.location}</span>
                     </div>
-                    <h3 className="text-blue-100 font-medium">Today's Weather</h3>
-                    <div className="flex items-center gap-4">
-                        <span className="text-7xl font-bold tracking-tighter">{weather.current.temp}°C</span>
-                    </div>
-                    <p className="text-xl font-medium text-blue-50 mt-1">{weather.current.condition}</p>
-                </div>
-                <CloudRain className="w-32 h-32 text-white/30 absolute -right-6 top-8" />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="flex items-center gap-2">
-                    <Thermometer size={18} className="text-blue-200" />
-                    <div>
-                        <p className="text-xs text-blue-100">Feels like</p>
-                        <p className="font-bold">{weather.current.temp}°C</p>
+                    <div className="flex items-baseline gap-2">
+                        <h4 className="text-xl font-black text-slate-900 tracking-tighter leading-none">
+                            {weather.current.temp}°{weather.current.unit}
+                        </h4>
+                        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">{weather.current.condition}</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Droplets size={18} className="text-blue-200" />
-                    <div>
-                        <p className="text-xs text-blue-100">Rain</p>
-                        <p className="font-bold">{weather.current.humidity}%</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Wind size={18} className="text-blue-200" />
-                    <div>
-                        <p className="text-xs text-blue-100">Wind</p>
-                        <p className="font-bold">{weather.current.windSpeed} km/h</p>
-                    </div>
+                <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shadow-sm">
+                    {getWeatherIcon(weather.current.condition)}
                 </div>
             </div>
 
-            <div className="flex justify-between gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {weather.forecast.map((day, i) => (
-                    <div key={i} className={`flex flex-col items-center justify-between p-3 rounded-2xl min-w-[60px] ${i === 1 ? 'bg-white/20 border border-white/30' : 'bg-white/10'}`}>
-                        <span className="text-sm font-medium">{day.day}</span>
-                        {day.condition === "Rainy" ? <CloudRain size={20} className="my-2" /> : <Sun size={20} className="my-2" />}
-                        <span className="text-lg font-bold">{day.temp}°</span>
-                    </div>
-                ))}
+            {/* Metrics Grid - More Compact */}
+            <div className="px-4 py-3 grid grid-cols-3 gap-2">
+                <div className="bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 flex flex-col items-center">
+                    <span className="text-[7px] font-black uppercase tracking-wider text-slate-400">Feels</span>
+                    <p className="text-xs font-black text-slate-800">{weather.current.temp}°</p>
+                </div>
+                <div className="bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 flex flex-col items-center">
+                    <span className="text-[7px] font-black uppercase tracking-wider text-slate-400">Humid</span>
+                    <p className="text-xs font-black text-slate-800">{weather.current.humidity}%</p>
+                </div>
+                <div className="bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 flex flex-col items-center">
+                    <span className="text-[7px] font-black uppercase tracking-wider text-slate-400">Wind</span>
+                    <p className="text-xs font-black text-slate-800">{weather.current.windSpeed} <span className="text-[7px]">km/h</span></p>
+                </div>
+            </div>
+
+            {/* Forecast - Slimmer */}
+            <div className="mt-auto border-t border-slate-50 p-3 bg-slate-50/30">
+                <div className="flex justify-between items-center px-1">
+                    {weather.forecast.map((day, i) => (
+                        <div key={i} className="flex flex-col items-center gap-0.5">
+                            <span className="text-[8px] font-bold text-slate-400 uppercase">{day.day}</span>
+                            <div className="scale-75 opacity-80">
+                                {getWeatherIcon(day.condition)}
+                            </div>
+                            <span className="text-[10px] font-black text-slate-700">{day.temp}°</span>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

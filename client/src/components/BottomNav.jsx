@@ -15,8 +15,8 @@ const BottomNav = () => {
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe-area z-50">
-            <div className="flex justify-between items-center px-6 py-2 max-w-lg mx-auto">
+        <nav className="fixed bottom-0 left-0 right-0 glass-effect border-t border-slate-100 pb-safe-area z-50">
+            <div className="flex justify-between items-center px-8 py-3 max-w-lg mx-auto">
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.path);
@@ -24,12 +24,12 @@ const BottomNav = () => {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center gap-1 transition-all w-16 h-16 rounded-2xl ${active ? 'bg-[#22C55E] text-white shadow-lg -translate-y-4 border-4 border-gray-50' : 'text-gray-400 hover:text-gray-600'
+                            className={`flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${active ? 'text-emerald-600 scale-110' : 'text-slate-400 opacity-60 hover:opacity-100'
                                 }`}
                             aria-label={item.label}
                         >
-                            <Icon size={active ? 24 : 24} strokeWidth={2.5} />
-                            <span className={`text-[10px] font-bold ${active ? 'block' : 'block'}`}>
+                            <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                            <span className={`text-[9px] font-black uppercase tracking-widest ${active ? 'block' : 'block opacity-0'}`}>
                                 {item.label}
                             </span>
                         </Link>
