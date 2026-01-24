@@ -1,59 +1,74 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { CloudRain, Sun, Cloud, Wind, Droplets, Thermometer } from 'lucide-react';
+import { useState } from 'react';
+import { CloudRain, Sun, Cloud, Wind, Droplets, Thermometer, ChevronDown } from 'lucide-react';
 
 const WeatherCard = () => {
-    const [weather, setWeather] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                const res = await axios.get('/api/weather');
-                setWeather(res.data);
-            } catch (err) {
-                console.error("Error fetching weather", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchWeather();
-    }, []);
-
-    if (loading) return <div className="h-48 bg-gray-200 animate-pulse rounded-2xl"></div>;
-    if (!weather) return <div className="p-4 bg-red-50 text-red-500 rounded-2xl">Weather data unavailable</div>;
+    // Demo Data
+    const weather = {
+        location: "Dhangadhi",
+        current: {
+            temp: 17,
+            condition: "Rainy",
+            humidity: 98,
+            windSpeed: 14
+        },
+        forecast: [
+            { day: "Sat", temp: 23, condition: "Rainy" },
+            { day: "Sun", temp: 25, condition: "Sunny" },
+            { day: "Mon", temp: 22, condition: "Cloudy" },
+            { day: "Tue", temp: 23, condition: "Rainy" },
+            { day: "Wed", temp: 20, condition: "Rainy" }
+        ]
+    };
 
     return (
-        <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
-            {/* Background decoration */}
-            <CloudRain className="absolute -right-4 -top-4 w-32 h-32 text-white/10" />
-
-            <div className="flex justify-between items-start z-10 relative">
+        <div className="bg-[#38BDF8] rounded-[32px] p-6 text-white shadow-xl relative overflow-hidden h-full">
+            <div className="flex justify-between items-start z-10 relative mb-8">
                 <div>
-                    <h2 className="text-lg font-medium opacity-90 flex items-center gap-1">📍 {weather.location}</h2>
-                    <div className="mt-2">
-                        <span className="text-6xl font-bold tracking-tighter">{weather.current.temp}°</span>
-                        <p className="text-xl font-medium mt-1">{weather.current.condition}</p>
+                    <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full inline-flex items-center gap-2 mb-4 cursor-pointer hover:bg-white/30 transition-colors">
+                        <span className="text-sm font-semibold">📍 {weather.location}</span>
+                        <ChevronDown size={14} />
+                    </div>
+                    <h3 className="text-blue-100 font-medium">Today's Weather</h3>
+                    <div className="flex items-center gap-4">
+                        <span className="text-7xl font-bold tracking-tighter">{weather.current.temp}°C</span>
+                    </div>
+                    <p className="text-xl font-medium text-blue-50 mt-1">{weather.current.condition}</p>
+                </div>
+                <CloudRain className="w-32 h-32 text-white/30 absolute -right-6 top-8" />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="flex items-center gap-2">
+                    <Thermometer size={18} className="text-blue-200" />
+                    <div>
+                        <p className="text-xs text-blue-100">Feels like</p>
+                        <p className="font-bold">{weather.current.temp}°C</p>
                     </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-md p-3 rounded-2xl">
-                    <CloudRain className="w-8 h-8 text-white" />
+                <div className="flex items-center gap-2">
+                    <Droplets size={18} className="text-blue-200" />
+                    <div>
+                        <p className="text-xs text-blue-100">Rain</p>
+                        <p className="font-bold">{weather.current.humidity}%</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Wind size={18} className="text-blue-200" />
+                    <div>
+                        <p className="text-xs text-blue-100">Wind</p>
+                        <p className="font-bold">{weather.current.windSpeed} km/h</p>
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-2 border-t border-white/20 pt-4">
-                <div className="flex flex-col items-center">
-                    <Thermometer size={20} className="mb-1 opacity-75" />
-                    <span className="text-sm font-semibold">{weather.current.temp}°C</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <Droplets size={20} className="mb-1 opacity-75" />
-                    <span className="text-sm font-semibold">{weather.current.humidity}%</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <Wind size={20} className="mb-1 opacity-75" />
-                    <span className="text-sm font-semibold">{weather.current.windSpeed} km/h</span>
-                </div>
+            <div className="flex justify-between gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {weather.forecast.map((day, i) => (
+                    <div key={i} className={`flex flex-col items-center justify-between p-3 rounded-2xl min-w-[60px] ${i === 1 ? 'bg-white/20 border border-white/30' : 'bg-white/10'}`}>
+                        <span className="text-sm font-medium">{day.day}</span>
+                        {day.condition === "Rainy" ? <CloudRain size={20} className="my-2" /> : <Sun size={20} className="my-2" />}
+                        <span className="text-lg font-bold">{day.temp}°</span>
+                    </div>
+                ))}
             </div>
         </div>
     );
