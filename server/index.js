@@ -17,6 +17,7 @@ app.use('/api/weather', require('./routes/weatherRoutes'));
 app.use('/api/market', require('./routes/marketRoutes'));
 app.use('/api/fertilizer', require('./routes/fertilizerRoutes'));
 app.use('/api/crop', require('./routes/cropRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -24,9 +25,28 @@ app.get('/', (req, res) => {
 });
 
 // Database Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/agrovision')
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error(err));
+const dbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/agrovision';
+
+mongoose.connect(dbUri)
+    .then(() => {
+        console.log('✅ MongoDB connected successfully');
+    })
+    .catch(err => {
+        console.error('❌ MongoDB connection error:');
+        console.error(err.message);
+        if (err.message.includes('buffering timed out')) {
+            console.error('Tip: Check if your IP is whitelisted in MongoDB Atlas or if you have a stable internet connection.');
+        }
+    });
+
+// Handle connection events
+mongoose.connection.on('error', err => {
+    console.error(`Mongoose connection error: ${err}`);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('Mongoose disconnected');
+});
 
 // Start Server
 app.listen(PORT, () => {

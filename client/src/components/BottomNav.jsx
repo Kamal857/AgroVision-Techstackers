@@ -1,4 +1,4 @@
-import { Home, Briefcase, Bell, User } from 'lucide-react';
+import { Home, ClipboardList, Bell, User } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -9,27 +9,29 @@ const BottomNav = () => {
 
     const navItems = [
         { icon: Home, label: t('home'), path: '/' },
-        { icon: Briefcase, label: t('jobs'), path: '/jobs' },
+        { icon: ClipboardList, label: 'My Jobs', path: '/jobs' },
         { icon: Bell, label: t('alerts'), path: '/notifications' },
         { icon: User, label: t('profile'), path: '/profile' },
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 glass-effect border-t border-slate-100 pb-safe-area z-50">
-            <div className="flex justify-between items-center px-8 py-3 max-w-lg mx-auto">
-                {navItems.map((item) => {
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 pb-safe-area z-50 rounded-t-[40px] shadow-2xl">
+            <div className="flex justify-between items-center px-6 py-4 max-w-lg mx-auto">
+                {navItems.map((item, idx) => {
                     const Icon = item.icon;
                     const active = isActive(item.path);
+
                     return (
                         <Link
-                            key={item.path}
+                            key={idx}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${active ? 'text-emerald-600 scale-110' : 'text-slate-400 opacity-60 hover:opacity-100'
+                            className={`flex flex-col items-center justify-center gap-1 min-w-[70px] transition-all duration-300 ${active ? 'text-emerald-500' : 'text-slate-300'
                                 }`}
-                            aria-label={item.label}
                         >
-                            <Icon size={20} strokeWidth={active ? 2.5 : 2} />
-                            <span className={`text-[9px] font-black uppercase tracking-widest ${active ? 'block' : 'block opacity-0'}`}>
+                            <div className={`p-2 rounded-2xl transition-all duration-300 ${active ? 'bg-emerald-500 text-white scale-110 shadow-lg shadow-emerald-100' : ''}`}>
+                                <Icon size={24} strokeWidth={active ? 2.5 : 2} />
+                            </div>
+                            <span className={`text-[9px] font-bold uppercase tracking-tight text-center ${active ? 'text-emerald-500' : 'text-slate-400'}`}>
                                 {item.label}
                             </span>
                         </Link>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowUpRight, ArrowDownRight, Minus, Loader2, ChevronRight, TrendingUp, RefreshCw } from 'lucide-react';
+import { ArrowUpRight, TrendingUp, RefreshCw, Minus } from 'lucide-react';
 import axios from 'axios';
 
 const MarketTeaser = () => {
@@ -8,81 +8,76 @@ const MarketTeaser = () => {
 
     useEffect(() => {
         axios.get('/api/market')
-            .then(res => setMarket(res.data.slice(0, 5)))
+            .then(res => setMarket(res.data.slice(0, 10)))
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
     }, []);
 
     if (loading) return (
-        <div className="flex justify-center items-center py-20 bg-white">
-            <Loader2 className="animate-spin text-emerald-600" size={32} />
+        <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
         </div>
     );
 
     const getIcon = (item) => {
         const name = item.toLowerCase();
-        if (name.includes("धान") || name.includes("rice")) return "🌾";
-        if (name.includes("गहुँ") || name.includes("wheat")) return "🌿";
-        if (name.includes("आलु") || name.includes("potato")) return "🥔";
-        if (name.includes("गोलभेडा") || name.includes("tomato")) return "🍅";
-        return "📦";
+        if (name.includes("धान") || name.includes("rice")) return { char: "🌾", color: "bg-amber-50" };
+        if (name.includes("गहुँ") || name.includes("wheat")) return { char: "🌿", color: "bg-emerald-50" };
+        if (name.includes("मकै") || name.includes("maize")) return { char: "🌽", color: "bg-yellow-50" };
+        if (name.includes("आलु") || name.includes("potato")) return { char: "🥔", color: "bg-orange-50" };
+        if (name.includes("गोलभेडा") || name.includes("tomato")) return { char: "🍅", color: "bg-red-50" };
+        if (name.includes("प्याज") || name.includes("onion")) return { char: "🧅", color: "bg-orange-50" };
+        if (name.includes("बन्दा") || name.includes("cabbage")) return { char: "🥬", color: "bg-green-50" };
+        if (name.includes("काउली") || name.includes("cauliflower")) return { char: "🥦", color: "bg-teal-50" };
+        if (name.includes("उखु") || name.includes("sugarcane")) return { char: "🎋", color: "bg-emerald-100" };
+        if (name.includes("दूध") || name.includes("milk")) return { char: "🥛", color: "bg-blue-50" };
+        return { char: "📦", color: "bg-slate-50" };
     };
 
     return (
-        <div className="bg-white">
-            {/* Header for the list */}
-            <div className="grid grid-cols-12 px-6 py-3 border-b border-slate-50 bg-slate-50/50">
-                <div className="col-span-1"></div>
-                <div className="col-span-7 font-black text-[10px] text-slate-400 uppercase tracking-widest">Commodity</div>
-                <div className="col-span-4 text-right font-black text-[10px] text-slate-400 uppercase tracking-widest">Pricing (NPR)</div>
-            </div>
-
-            <div className="divide-y divide-slate-50">
-                {market.map((item, idx) => (
-                    <div
-                        key={idx}
-                        className="grid grid-cols-12 items-center px-6 py-4 hover:bg-slate-50/50 transition-colors group cursor-pointer"
-                    >
-                        <div className="col-span-1 text-xl grayscale group-hover:grayscale-0 transition-all opacity-70 group-hover:opacity-100">
-                            {getIcon(item.item)}
-                        </div>
-                        <div className="col-span-7 pl-2">
-                            <h4 className="font-bold text-slate-900 text-sm tracking-tight">{item.item}</h4>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter">LOC:</span>
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">{item.location?.split(' ')[0]}</span>
-                            </div>
-                        </div>
-                        <div className="col-span-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                                {item.trend === 'up' && <TrendingUp size={12} className="text-emerald-500" />}
-                                <span className="font-black text-slate-900">Rs {item.price}</span>
-                            </div>
-                            <div className="flex items-center justify-end gap-1 text-[9px] mt-0.5">
-                                <span className="text-slate-400">per {item.unit}</span>
-                                <div className={`w-1 h-1 rounded-full ${item.trend === 'up' ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                                <span className={`font-bold ${item.trend === 'up' ? 'text-emerald-500' : 'text-slate-400'}`}>
-                                    {item.trend === 'stable' ? '0.0%' : item.trend === 'up' ? '+1.2%' : '-0.5%'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Footer Interaction */}
-            <div className="p-4 border-t border-slate-50">
-                <div className="bg-emerald-50 rounded-xl p-3 flex justify-between items-center group cursor-pointer hover:bg-emerald-100 transition-colors">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-emerald-600 shadow-sm">
-                            <RefreshCw size={14} className="group-hover:rotate-180 transition-transform duration-500" />
-                        </div>
-                        <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest">Index Synced: Today</p>
-                    </div>
-                    <ChevronRight size={14} className="text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+        <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50">
+            <div className="flex justify-between items-start mb-8">
+                <div>
+                    <h3 className="text-xl font-bold text-slate-900 leading-tight">Market Prices</h3>
+                    <p className="text-slate-400 text-xs font-bold mt-1">Dhangadhi - Dhangadhi market rates</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <RefreshCw size={18} className="text-emerald-500" />
+                    <button className="text-emerald-500 text-sm font-bold uppercase tracking-widest">See All</button>
                 </div>
             </div>
+
+            <div className="flex flex-col gap-6">
+                {market.map((item, idx) => {
+                    const icon = getIcon(item.item);
+                    return (
+                        <div key={idx} className="flex items-center justify-between group">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-14 h-14 ${icon.color} rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-black/5`}>
+                                    {icon.char}
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-900 text-lg">{item.item}</h4>
+                                    <p className="text-xs text-slate-400 font-bold">per {item.unit}</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-xl font-bold text-slate-900">रु {item.price}</div>
+                                <div className={`flex items-center justify-end gap-1 text-[10px] font-bold uppercase tracking-widest mt-0.5 ${item.trend === 'up' ? 'text-emerald-500' : 'text-slate-400'}`}>
+                                    {item.trend === 'up' ? <TrendingUp size={12} className="stroke-[3]" /> : <Minus size={12} className="stroke-[3]" />}
+                                    <span>{item.trend === 'up' ? '+1.2%' : 'Stable'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <p className="text-center text-[10px] text-slate-300 font-bold uppercase tracking-widest mt-10 opacity-70">
+                Updated: {new Date().toLocaleDateString('en-CA')}
+            </p>
         </div>
     );
 };
+
 export default MarketTeaser;

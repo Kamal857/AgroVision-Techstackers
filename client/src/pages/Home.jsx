@@ -1,20 +1,17 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import {
-    Camera, Upload, Leaf, RefreshCw, Menu, X,
-    Loader2, CheckCircle, AlertTriangle, ChevronRight,
-    ScanLine, LayoutDashboard, Bell, Search, MapPin,
-    Wind, Droplets, Thermometer, TrendingUp
+    Camera, Upload, Leaf, X, Loader2, CheckCircle,
+    AlertTriangle, ChevronRight, ScanLine, Bell, Grid, Menu
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import WeatherCard from '../components/WeatherCard';
 import MarketTeaser from '../components/MarketTeaser';
-import Sidebar from '../components/Sidebar';
+import FertilizerStock from '../components/FertilizerStock';
+import FarmingTools from '../components/FarmingTools';
 import { useLanguage } from '../context/LanguageContext';
 
-const Home = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const Home = ({ onOpenSidebar }) => {
     const { t } = useLanguage();
 
     // Crop Doctor State
@@ -32,6 +29,7 @@ const Home = () => {
             setPreview(URL.createObjectURL(selectedFile));
             setResult(null);
             setError(null);
+            // Auto analyze after file selection
             handleAnalyze(selectedFile);
         }
     };
@@ -63,195 +61,154 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] pb-24">
-            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        <div className="min-h-screen bg-[#f5f5f5] pb-32">
 
-            {/* Premium Header / Navbar */}
-            <nav className="sticky top-0 z-50 px-6 py-4 flex justify-between items-center glass-effect">
-                <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 bg-emerald-900 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <Leaf size={22} className="text-emerald-400" />
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-none">AgroVision</h1>
-                        <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest"></span>
-                    </div>
+            {/* Hero Section with BG Image */}
+            <header className="relative h-[240px] px-8 pt-10 pb-20 overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                        alt="Background"
+                        className="w-full h-full object-cover brightness-[0.7] saturate-[1.2]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#f5f5f5]"></div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors">
-                        <Bell size={20} />
-                    </button>
-                    <button
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white shadow-xl active:scale-95 transition-transform"
-                    >
-                        <Menu size={20} />
-                    </button>
-                </div>
-            </nav>
 
-            <main className="px-6 py-8 md:max-w-4xl md:mx-auto space-y-8">
-
-                {/* Dashboard Greeting - Clean Typography */}
-                <header className="flex justify-between items-end">
-                    <div>
-                        <p className="text-slate-400 font-semibold text-sm mb-1 uppercase tracking-wider">{t('welcome')}</p>
-                        <h2 className="text-3xl font-black text-slate-900"> Kamal <span className="text-emerald-600">.</span></h2>
+                <div className="relative z-10 flex flex-col gap-6">
+                    <div className="flex justify-end items-center">
+                        <button
+                            onClick={onOpenSidebar}
+                            className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-500/20 active:scale-95 transition-transform"
+                        >
+                            <Menu size={24} />
+                        </button>
                     </div>
-                    <div className="text-right hidden sm:block">
-                        <div className="flex items-center gap-2 text-slate-500 font-medium">
-                            <MapPin size={16} />
-                            <span>Dhangadhi, Nepal</span>
+
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white border-2 border-white shadow-lg">
+                            <Leaf size={24} />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-white leading-none">AgroVision</h1>
+                            <p className="text-white font-bold opacity-90 mt-1">Welcome back, boharakamal857! 🙏</p>
                         </div>
                     </div>
-                </header>
+                </div>
+            </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                    {/* Weather Section - Pro Dashboard Style */}
-                    <div className="space-y-3 md:col-span-5">
-                        <h3 className="font-bold text-slate-800 flex items-center gap-2 uppercase text-[10px] tracking-widest">
-                            <Wind size={14} className="text-emerald-600" />
-                            Live Climate
-                        </h3>
-                        <WeatherCard />
+            <main className="px-5 -mt-10 relative z-20 space-y-8 max-w-2xl mx-auto">
+                {/* Weather Section */}
+                <WeatherCard />
+
+                {/* AI Crop Doctor Section */}
+                <section className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50">
+                    <div className="flex justify-between items-start mb-8">
+                        <div className="flex gap-4">
+                            <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-100">
+                                <Leaf size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">AI Crop Doctor</h3>
+                                <p className="text-slate-400 text-xs font-bold mt-1">Scan your crop for advice</p>
+                            </div>
+                        </div>
+                        <button className="bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-100">
+                            View All
+                        </button>
                     </div>
 
-                    {/* AI Diagnostics Section */}
-                    <div className="space-y-3 md:col-span-7">
-                        <h3 className="font-bold text-slate-800 flex items-center gap-2 uppercase text-[10px] tracking-widest">
-                            <ScanLine size={14} className="text-emerald-600" />
-                            AI Diagnostics
-                        </h3>
+                    {!preview ? (
+                        <div className="border-2 border-dashed border-emerald-200 rounded-[32px] p-10 flex flex-col items-center">
+                            <div className="flex gap-4 mb-6">
+                                <button
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="bg-emerald-500 text-white px-8 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-emerald-100 active:scale-95 transition-transform"
+                                >
+                                    <Camera size={20} />
+                                    Camera
+                                </button>
+                                <button
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="bg-amber-500 text-white px-8 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-amber-100 active:scale-95 transition-transform"
+                                >
+                                    <Upload size={20} />
+                                    Pick
+                                </button>
+                            </div>
+                            <p className="text-center text-sm font-bold text-slate-400 leading-relaxed max-w-[200px]">
+                                Take Photo or Upload of your crop leaf
+                            </p>
+                            <input
+                                type="file"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept="image/*"
+                            />
+                        </div>
+                    ) : (
+                        <div className="relative rounded-[32px] overflow-hidden bg-slate-100 border border-slate-200">
+                            <img src={preview} alt="Crop preview" className="w-full aspect-[4/3] object-cover" />
+                            <button
+                                onClick={resetScan}
+                                className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full backdrop-blur-md"
+                            >
+                                <X size={20} />
+                            </button>
 
-                        <div className="card-premium h-full min-h-[300px] flex flex-col">
-                            {!preview ? (
-                                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-br from-white to-slate-50">
-                                    <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6 border border-slate-100 shadow-inner group">
-                                        <Camera className="text-slate-400 group-hover:text-emerald-600 transition-colors" size={32} />
-                                    </div>
-                                    <h4 className="text-lg font-bold text-slate-900 mb-2">Scan Crop Health</h4>
-                                    <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                                        Identify pest damage and mineral deficiencies using computer vision.
-                                    </p>
-
-                                    <div className="flex gap-3 w-full max-w-xs">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            className="hidden"
-                                            ref={fileInputRef}
-                                            onChange={handleFileChange}
-                                        />
-                                        <button
-                                            onClick={() => fileInputRef.current.click()}
-                                            className="flex-1 btn-premium-primary"
-                                        >
-                                            <Camera size={18} />
-                                            Capture
-                                        </button>
-                                        <button
-                                            onClick={() => fileInputRef.current.click()}
-                                            className="flex-1 btn-premium-outline"
-                                        >
-                                            <Upload size={18} />
-                                            Upload
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="p-6 h-full flex flex-col">
-                                    <div className="relative h-48 rounded-2xl overflow-hidden mb-6 shadow-inner">
-                                        <img src={preview} alt="Crop" className="w-full h-full object-cover" />
-                                        <button
-                                            onClick={resetScan}
-                                            className="absolute top-3 right-3 p-2 bg-white/20 hover:bg-white/40 text-white rounded-full transition-colors backdrop-blur-md border border-white/30"
-                                        >
-                                            <X size={16} />
-                                        </button>
-
-                                        {loading && (
-                                            <motion.div
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                className="absolute inset-0 bg-slate-900/80 flex flex-col items-center justify-center text-white backdrop-blur-sm"
-                                            >
-                                                <Loader2 size={32} className="animate-spin mb-3 text-emerald-400" />
-                                                <p className="text-sm font-bold tracking-widest uppercase opacity-70">Processing Neural Data</p>
-                                            </motion.div>
-                                        )}
-                                    </div>
-
-                                    {result && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="space-y-6 flex-1"
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div>
-                                                    <h2 className="text-2xl font-black text-slate-900 mb-1">{result.crop}</h2>
-                                                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${result.health === 'Healthy'
-                                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                                        : 'bg-rose-50 text-rose-700 border-rose-100'
-                                                        }`}>
-                                                        {result.health === 'Healthy' ? <CheckCircle size={10} /> : <AlertTriangle size={10} />}
-                                                        Status: {result.health}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Confidence</div>
-                                                    <div className="text-2xl font-black text-emerald-600">{result.confidence}</div>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-3">
-                                                <h4 className="font-black text-slate-800 text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                                                    Technical Analysis
-                                                </h4>
-                                                <ul className="grid gap-2">
-                                                    {result.careTips?.slice(0, 3).map((tip, idx) => (
-                                                        <li key={idx} className="flex gap-3 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100/50">
-                                                            <div className="w-5 h-5 bg-white rounded-md border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400 shrink-0">
-                                                                0{idx + 1}
-                                                            </div>
-                                                            {tip}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-
-                                            <button
-                                                onClick={resetScan}
-                                                className="w-full btn-premium-primary mt-4"
-                                            >
-                                                Start New Scan
-                                            </button>
-                                        </motion.div>
-                                    )}
+                            {loading && (
+                                <div className="absolute inset-0 bg-emerald-900/40 backdrop-blur-sm flex flex-col items-center justify-center text-white">
+                                    <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                    <p className="mt-4 font-bold uppercase tracking-widest">Analyzing Crop...</p>
                                 </div>
                             )}
+
+                            {result && !loading && (
+                                <motion.div
+                                    initial={{ y: 100 }}
+                                    animate={{ y: 0 }}
+                                    className="absolute inset-x-0 bottom-0 bg-white p-6 rounded-t-[32px] border-t border-slate-100"
+                                >
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 className="text-2xl font-bold text-slate-900">{result.crop}</h4>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-widest ${result.health === 'Healthy' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
+                                                    }`}>
+                                                    {result.health}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Confidence</p>
+                                            <p className="text-2xl font-bold text-emerald-500">{result.confidence}</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-6">
+                                        {result.careTips?.slice(0, 2).map((tip, i) => (
+                                            <div key={i} className="flex gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                <CheckCircle size={14} className="text-emerald-500 shrink-0" />
+                                                <p className="font-bold text-slate-600">{tip}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button onClick={resetScan} className="w-full btn-premium-primary">
+                                        Try Another Scan
+                                    </button>
+                                </motion.div>
+                            )}
                         </div>
-                    </div>
-                </div>
-
-                {/* Market Intelligence Section */}
-                <section className="space-y-4">
-                    <div className="flex justify-between items-end">
-                        <h3 className="font-bold text-slate-800 flex items-center gap-2 uppercase text-xs tracking-widest">
-                            <TrendingUp size={16} className="text-emerald-600" />
-                            Market Intelligence
-                        </h3>
-                        <Link to="/market" className="text-emerald-600 text-xs font-black uppercase tracking-widest hover:text-emerald-800 flex items-center gap-1 group">
-                            View Price Board
-                            <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-                    </div>
-
-                    <div className="card-premium p-1">
-                        <MarketTeaser />
-                    </div>
+                    )}
                 </section>
+
+                {/* Market Intelligence */}
+                <MarketTeaser />
+
+                {/* Fertilizer Section */}
+                <FertilizerStock />
+
+                {/* Farming Tools */}
+                <FarmingTools />
             </main>
         </div>
     );
