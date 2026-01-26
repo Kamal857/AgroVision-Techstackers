@@ -33,9 +33,27 @@ exports.detectCrop = async (req, res) => {
         const imageData = fs.readFileSync(imagePath);
         const base64Image = Buffer.from(imageData).toString("base64");
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        console.log("Calling Gemini API with model: gemini-2.5-flash...");
 
-        const prompt = "Analyze this crop image. Identify the crop name, its health status (Healthy/Disease Name), confidence level, and providing 3 bullet points for care tips or cure if diseased. Return the response in strictly JSON format like: { \"crop\": \"string\", \"health\": \"string\", \"disease\": \"string\", \"confidence\": \"string\", \"careTips\": [\"string\"] }";
+        const prompt = `Analyze this plant/crop image. 
+        Identify the following:
+        1. Crop Name
+        2. Health Status (either "Healthy" or the specific disease name)
+        3. Confidence Level (as a percentage)
+        4. Symptoms (key things observed in the image)
+        5. Treatment (immediate recommended actions)
+        6. Prevention (how to prevent this in the future)
+
+        Return the response in strictly JSON format with this structure:
+        {
+          "crop": "string",
+          "health": "string",
+          "confidence": "string",
+          "symptoms": ["string"],
+          "treatment": ["string"],
+          "prevention": ["string"]
+        }`;
 
         const result = await model.generateContent([
             prompt,
@@ -53,9 +71,23 @@ exports.detectCrop = async (req, res) => {
         // Cleanup uploaded file
         fs.unlinkSync(imagePath);
 
-        // Parse JSON from markdown code block if present
-        const cleanText = text.replace(/```json/g, '').replace(/```/g, '');
-        const jsonResponse = JSON.parse(cleanText);
+        // Parse JSON from text, handling markdown blocks
+        let jsonResponse;
+        try {
+            const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            jsonResponse = JSON.parse(cleanText);
+        } catch (parseError) {
+            console.error("Failed to parse Gemini response as JSON:", text);
+            // Fallback for non-JSON responses
+            jsonResponse = {
+                crop: "Unknown",
+                health: "Analysis Error",
+                confidence: "0%",
+                symptoms: ["Could not parse response"],
+                treatment: ["Please try again"],
+                prevention: ["N/A"]
+            };
+        }
 
         res.json(jsonResponse);
 

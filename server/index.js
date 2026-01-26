@@ -18,6 +18,7 @@ app.use('/api/market', require('./routes/marketRoutes'));
 app.use('/api/fertilizer', require('./routes/fertilizerRoutes'));
 app.use('/api/crop', require('./routes/cropRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/agronomist', require('./routes/agronomistRoutes'));
 
 // Basic Route
 app.get('/', (req, res) => {

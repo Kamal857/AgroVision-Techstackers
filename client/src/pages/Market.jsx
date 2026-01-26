@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { ArrowUpRight, ArrowDownRight, Minus, Search, Filter, RefreshCw, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 const Market = () => {
@@ -11,7 +11,7 @@ const Market = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('/api/market');
+            const res = await api.get('/market');
             setMarket(res.data);
         } catch (err) {
             console.error(err);
@@ -28,7 +28,7 @@ const Market = () => {
         setSyncing(true);
         setSyncMessage(null);
         try {
-            const res = await axios.post('/api/market/sync');
+            const res = await api.post('/market/sync');
             setSyncMessage({ type: 'success', text: `Synced ${res.data.count} items!` });
             fetchData(); // Refresh list
         } catch (err) {
@@ -69,8 +69,8 @@ const Market = () => {
                     onClick={handleSync}
                     disabled={syncing}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${syncing
-                            ? 'bg-gray-100 text-gray-400'
-                            : 'bg-[#22C55E] text-white shadow-lg shadow-green-200 active:scale-95'
+                        ? 'bg-gray-100 text-gray-400'
+                        : 'bg-[#22C55E] text-white shadow-lg shadow-green-200 active:scale-95'
                         }`}
                 >
                     {syncing ? <RefreshCw size={16} className="animate-spin" /> : <RefreshCw size={16} />}
