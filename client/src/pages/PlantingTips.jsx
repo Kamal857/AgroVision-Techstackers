@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     ArrowLeft, Sprout, Calendar, Ruler, Users,
     Droplet, Thermometer, ChevronRight, CheckCircle2,
-    Info, Search, Flower2, Leaf
+    Info, Search, Flower2, Leaf, Calculator
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AgronomistChat from '../components/AgronomistChat';
@@ -12,13 +12,35 @@ const PlantingTips = () => {
     const navigate = useNavigate();
     const [selectedCrop, setSelectedCrop] = useState(null);
     const [activeTab, setActiveTab] = useState('spacing');
+    const [landArea, setLandArea] = useState('');
+    const [areaUnit, setAreaUnit] = useState('ropani');
 
     const crops = [
-        { id: 1, name: 'Maize', depth: '5-7 cm', spacing: '25-30 cm', companion: 'Beans, Squash', bad: 'Tomatoes', icon: <Flower2 size={20} /> },
-        { id: 2, name: 'Tomato', depth: '1-2 cm', spacing: '45-60 cm', companion: 'Basil, Onion', bad: 'Potatoes', icon: <Flower2 size={20} /> },
-        { id: 3, name: 'Potato', depth: '10-15 cm', spacing: '30-40 cm', companion: 'Beans, Corn', bad: 'Tomatoes', icon: <Sprout size={20} /> },
-        { id: 4, name: 'Carrot', depth: '0.5-1 cm', spacing: '5-10 cm', companion: 'Onion, Leek', bad: 'Dill', icon: <Leaf size={20} /> },
+        { id: 1, name: 'Rice', depth: '2-3 cm', spacing: '15-20 cm', rowSpacing: '20 cm', companion: 'Soybeans, Marigold', bad: 'None', icon: <Sprout size={20} /> },
+        { id: 2, name: 'Wheat', depth: '3-4 cm', spacing: '5-7 cm', rowSpacing: '22 cm', companion: 'Beans, Peas', bad: 'None', icon: <Leaf size={20} /> },
+        { id: 3, name: 'Maize', depth: '5-7 cm', spacing: '25-30 cm', rowSpacing: '60 cm', companion: 'Beans, Squash', bad: 'Tomatoes', icon: <Flower2 size={20} /> },
+        { id: 4, name: 'Tomato', depth: '1-2 cm', spacing: '45-60 cm', rowSpacing: '75 cm', companion: 'Basil, Onion', bad: 'Potatoes', icon: <Flower2 size={20} /> },
+        { id: 5, name: 'Potato', depth: '10-15 cm', spacing: '30-40 cm', rowSpacing: '60 cm', companion: 'Beans, Corn', bad: 'Tomatoes', icon: <Sprout size={20} /> },
+        { id: 6, name: 'Onion', depth: '1-2 cm', spacing: '10-15 cm', rowSpacing: '20 cm', companion: 'Carrots, Lettuce', bad: 'Beans, Peas', icon: <Leaf size={20} /> },
+        { id: 7, name: 'Garlic', depth: '5-7 cm', spacing: '10-15 cm', rowSpacing: '20 cm', companion: 'Roses, Tomatoes', bad: 'Beans, Peas', icon: <Leaf size={20} /> },
+        { id: 8, name: 'Carrot', depth: '0.5-1 cm', spacing: '5-10 cm', rowSpacing: '25 cm', companion: 'Onion, Leek', bad: 'Dill', icon: <Leaf size={20} /> },
     ];
+
+    const calculateSeeds = () => {
+        if (!selectedCrop || !landArea) return 0;
+
+        // Unit conversion to Sq Meters
+        let areaInSqM = parseFloat(landArea);
+        if (areaUnit === 'ropani') areaInSqM *= 508.74;
+        else if (areaUnit === 'bigha') areaInSqM *= 6772.63;
+
+        // Spacing conversion to meters
+        const s = parseFloat(selectedCrop.spacing) / 100;
+        const r = parseFloat(selectedCrop.rowSpacing) / 100;
+
+        return Math.round(areaInSqM / (s * r));
+    };
+
 
     return (
         <div className="min-h-screen bg-[#f8fafc] pb-32">
@@ -66,7 +88,7 @@ const PlantingTips = () => {
                                 <Ruler size={20} className="text-emerald-500" /> Depth & Spacing
                             </h3>
 
-                            <div className="grid grid-cols-2 gap-3 mb-8">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                                 {crops.map((crop) => (
                                     <button
                                         key={crop.id}
@@ -80,10 +102,11 @@ const PlantingTips = () => {
                                             }`}>
                                             {crop.icon}
                                         </div>
-                                        <span className="text-xs font-bold text-slate-900">{crop.name}</span>
+                                        <span className="text-[10px] font-bold text-slate-900 uppercase tracking-tight">{crop.name}</span>
                                     </button>
                                 ))}
                             </div>
+
 
                             <AnimatePresence mode="wait">
                                 {selectedCrop ? (
@@ -113,6 +136,52 @@ const PlantingTips = () => {
                                                 </p>
                                             </div>
                                         </div>
+                                        <div className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-200/50 mt-8">
+                                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                                <Calculator size={20} className="text-emerald-400" /> Seed & Plant Calculator
+                                            </h3>
+                                            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-6">Estimate needs based on land area</p>
+
+                                            <div className="space-y-4">
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="number"
+                                                        value={landArea}
+                                                        onChange={(e) => setLandArea(e.target.value)}
+                                                        placeholder="Enter area"
+                                                        className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-emerald-500 transition-all font-bold"
+                                                    />
+                                                    <select
+                                                        value={areaUnit}
+                                                        onChange={(e) => setAreaUnit(e.target.value)}
+                                                        className="bg-white/10 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-emerald-500 transition-all font-bold text-xs uppercase"
+                                                    >
+                                                        <option value="ropani" className="text-slate-900">Ropani</option>
+                                                        <option value="bigha" className="text-slate-900">Bigha</option>
+                                                        <option value="sqm" className="text-slate-900">Sq. Meters</option>
+                                                    </select>
+                                                </div>
+
+                                                {calculateSeeds() > 0 ? (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center"
+                                                    >
+                                                        <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Total Needed for {selectedCrop.name}</p>
+                                                        <p className="text-3xl font-bold text-white mb-1">
+                                                            {calculateSeeds().toLocaleString()}
+                                                        </p>
+                                                        <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Seeds / Seedlings</p>
+                                                    </motion.div>
+                                                ) : (
+                                                    <div className="bg-white/5 border border-dashed border-white/10 rounded-2xl p-5 text-center">
+                                                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Enter area above to calculate</p>
+                                                    </div>
+                                                )}
+
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 ) : (
                                     <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl p-8 text-center">
@@ -123,6 +192,7 @@ const PlantingTips = () => {
                         </div>
                     </motion.section>
                 )}
+
 
                 {activeTab === 'calendar' && (
                     <motion.section

@@ -2,17 +2,32 @@ import { useState } from 'react';
 import { Mail, Lock, ArrowRight, Leaf } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Mock login
-        navigate('/');
+        setIsLoading(true);
+        setError('');
+
+        const result = await login({ email, password });
+
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.message);
+            setIsLoading(false);
+        }
     };
+
+
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center px-6">
@@ -30,6 +45,11 @@ const Login = () => {
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
+                    {error && (
+                        <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl border border-rose-100 text-xs font-bold uppercase tracking-widest text-center">
+                            {error}
+                        </div>
+                    )}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
                         <div className="relative">
@@ -66,11 +86,13 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full btn-premium-primary"
+                        disabled={isLoading}
+                        className={`w-full btn-premium-primary ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        Sign In
+                        {isLoading ? 'Signing In...' : 'Sign In'}
                     </button>
                 </form>
+
 
                 <p className="text-center mt-10 text-slate-400 font-medium">
                     Don't have an account? {' '}

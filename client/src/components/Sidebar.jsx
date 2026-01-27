@@ -8,10 +8,13 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const { t } = useLanguage();
     const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
 
     const menuItems = [
         { icon: Calculator, label: t('calculator'), color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/calculator' },
@@ -64,7 +67,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                             <div>
                                 <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                                    Kamal Bohara
+                                    {user?.name || 'User'}
                                     <ShieldCheck size={18} className="text-emerald-500" />
                                 </h3>
                                 <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Verified Merchant ID: #857</p>
@@ -143,6 +146,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             </div>
                             <button
                                 onClick={() => {
+                                    logout();
                                     navigate('/login');
                                     onClose();
                                 }}

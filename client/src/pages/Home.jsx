@@ -11,10 +11,13 @@ import FertilizerStock from '../components/FertilizerStock';
 import FarmingTools from '../components/FarmingTools';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 const Home = ({ onOpenSidebar }) => {
     const { t } = useLanguage();
     const navigate = useNavigate();
+    const { user } = useAuth();
+
 
     // Crop Doctor State
     const [file, setFile] = useState(null);
@@ -92,7 +95,7 @@ const Home = ({ onOpenSidebar }) => {
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold text-white leading-none">AgroVision</h1>
-                            <p className="text-white font-bold opacity-90 mt-1">Welcome back, boharakamal857! 🙏</p>
+                            <p className="text-white font-bold opacity-90 mt-1">Welcome back, {user?.name || 'Farmer'}! 🙏</p>
                         </div>
                     </div>
                 </div>

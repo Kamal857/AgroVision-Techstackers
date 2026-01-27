@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import BottomNav from './components/BottomNav';
 import Sidebar from './components/Sidebar';
@@ -19,15 +19,41 @@ import CropCalendar from './pages/CropCalendar';
 import PestControl from './pages/PestControl';
 import { LanguageProvider } from './context/LanguageContext';
 import { AccountabilityProvider } from './context/AccountabilityContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { useEffect } from 'react';
 
 import { useLocation } from 'react-router-dom';
 
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null; // Or a loading spinner
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const AuthRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null;
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 const AppContent = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
-  const hideNavigation = ['/login', '/signup'].includes(location.pathname);
+  const hideNavigation = ['/login', '/signup'].includes(location.pathname) || !isAuthenticated;
 
   return (
     <div className={`min-h-screen bg-slate-50 text-slate-900 font-sans ${!hideNavigation ? 'pb-24 sm:pb-0 sm:pl-24 lg:pl-0' : ''}`}>
@@ -36,21 +62,21 @@ const AppContent = () => {
       )}
 
       <Routes>
-        <Route path="/" element={<Home onOpenSidebar={() => setIsSidebarOpen(true)} />} />
-        <Route path="/crop-doctor" element={<CropDoctor />} />
-        <Route path="/market" element={<Market />} />
-        <Route path="/calculator" element={<CalculatorPage />} />
-        <Route path="/income" element={<Income />} />
-        <Route path="/expense" element={<Expense />} />
-        <Route path="/planting-tips" element={<PlantingTips />} />
-        <Route path="/irrigation-tips" element={<IrrigationTips />} />
-        <Route path="/crop-calendar" element={<CropCalendar />} />
-        <Route path="/pest-control" element={<PestControl />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/jobs" element={<MyJobs />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<ProtectedRoute><Home onOpenSidebar={() => setIsSidebarOpen(true)} /></ProtectedRoute>} />
+        <Route path="/crop-doctor" element={<ProtectedRoute><CropDoctor /></ProtectedRoute>} />
+        <Route path="/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />
+        <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
+        <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
+        <Route path="/expense" element={<ProtectedRoute><Expense /></ProtectedRoute>} />
+        <Route path="/planting-tips" element={<ProtectedRoute><PlantingTips /></ProtectedRoute>} />
+        <Route path="/irrigation-tips" element={<ProtectedRoute><IrrigationTips /></ProtectedRoute>} />
+        <Route path="/crop-calendar" element={<ProtectedRoute><CropCalendar /></ProtectedRoute>} />
+        <Route path="/pest-control" element={<ProtectedRoute><PestControl /></ProtectedRoute>} />
+        <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
+        <Route path="/signup" element={<AuthRoute><Signup /></AuthRoute>} />
+        <Route path="/jobs" element={<ProtectedRoute><MyJobs /></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Routes>
 
       {!hideNavigation && <BottomNav />}
@@ -65,13 +91,16 @@ function App() {
 
   return (
     <LanguageProvider>
-      <AccountabilityProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </AccountabilityProvider>
+      <AuthProvider>
+        <AccountabilityProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </AccountabilityProvider>
+      </AuthProvider>
     </LanguageProvider>
   );
 }
+
 
 export default App;

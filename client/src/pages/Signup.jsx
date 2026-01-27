@@ -2,21 +2,47 @@ import { useState } from 'react';
 import { Mail, Lock, User, ArrowLeft, Leaf } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const Signup = () => {
     const navigate = useNavigate();
+    const { signup } = useAuth();
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         password: '',
         confirmPassword: ''
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
-        // Mock signup
-        navigate('/');
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        setIsLoading(true);
+        setError('');
+
+        const result = await signup({
+            name: formData.fullName,
+            email: formData.email,
+            password: formData.password,
+            role: 'farmer' // Default role
+        });
+
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.message);
+            setIsLoading(false);
+        }
     };
+
+
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center px-6 py-12">
@@ -34,6 +60,11 @@ const Signup = () => {
                 </div>
 
                 <form onSubmit={handleSignup} className="space-y-5">
+                    {error && (
+                        <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl border border-rose-100 text-xs font-bold uppercase tracking-widest text-center">
+                            {error}
+                        </div>
+                    )}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
                         <div className="relative">
@@ -41,7 +72,7 @@ const Signup = () => {
                                 type="text"
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                placeholder="Kamal Bohara"
+                                placeholder="Full Name"
                                 className="w-full p-4 bg-white border border-slate-100 rounded-[28px] focus:outline-none focus:border-emerald-500 shadow-sm text-base font-bold text-slate-800 placeholder:text-slate-200"
                                 required
                             />
@@ -96,11 +127,13 @@ const Signup = () => {
 
                     <button
                         type="submit"
-                        className="w-full btn-premium-primary !py-5 mt-4"
+                        disabled={isLoading}
+                        className={`w-full btn-premium-primary !py-5 mt-4 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        Create Account
+                        {isLoading ? 'Creating Account...' : 'Create Account'}
                     </button>
                 </form>
+
 
                 <p className="text-center mt-10 text-slate-400 font-medium">
                     Already have an account? {' '}

@@ -1,19 +1,22 @@
 import { MapPin, Phone, Mail, Settings, Bell, ChevronRight, Globe, ShieldCheck, User as UserIcon, LogOut } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
     const { language, setLanguage, t } = useLanguage();
     const navigate = useNavigate();
+    const { logout, user } = useAuth();
 
     const toggleLanguage = () => {
         setLanguage(prev => prev === 'en' ? 'np' : 'en');
     };
 
     const handleLogout = () => {
-        // Add logout logic here
+        logout();
         navigate('/login');
     };
+
 
     return (
         <div className="pb-32 bg-slate-50 min-h-screen text-slate-900 font-sans">
@@ -29,7 +32,7 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Kamal Bohara</h1>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{user?.name || 'User'}</h1>
                     <p className="text-slate-500 text-sm font-medium mb-4 flex items-center gap-1.5">
                         <MapPin size={14} className="text-emerald-500" />
                         Dhangadhi, Nepal
@@ -56,7 +59,7 @@ const Profile = () => {
                                 </div>
                                 <div className="text-left">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Official Email</p>
-                                    <p className="text-sm font-bold text-slate-900">backupkamal857@gmail.com</p>
+                                    <p className="text-sm font-bold text-slate-900">{user?.email || 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
