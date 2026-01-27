@@ -14,20 +14,20 @@ const Sidebar = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
 
     const menuItems = [
-        { icon: Calculator, label: 'Calculator', color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/calculator' },
-        { icon: TrendingUp, label: 'Income', color: 'text-blue-600', bg: 'bg-blue-50', path: '/income' },
-        { icon: TrendingDown, label: 'Expense', color: 'text-rose-600', bg: 'bg-rose-50', path: '/expense' },
-        { icon: Package, label: 'Stock / Inventory', color: 'text-amber-600', bg: 'bg-amber-50', path: '/stock' },
-        { icon: PieChart, label: 'Market Analytics', color: 'text-indigo-600', bg: 'bg-indigo-50', path: '/analytics' },
-        { icon: Bell, label: 'Notifications', color: 'text-teal-600', bg: 'bg-teal-50', path: '/notifications' },
+        { icon: Calculator, label: t('calculator'), color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/calculator' },
+        { icon: TrendingUp, label: t('income'), color: 'text-blue-600', bg: 'bg-blue-50', path: '/income' },
+        { icon: TrendingDown, label: t('expense'), color: 'text-rose-600', bg: 'bg-rose-50', path: '/expense' },
+        { icon: Package, label: t('stock'), color: 'text-amber-600', bg: 'bg-amber-50', path: '/stock' },
+        { icon: PieChart, label: t('marketAnalytics'), color: 'text-indigo-600', bg: 'bg-indigo-50', path: '/analytics' },
+        { icon: Bell, label: t('notifications'), color: 'text-teal-600', bg: 'bg-teal-50', path: '/notifications' },
     ];
 
     const intelligenceItems = [
-        { icon: BrainCircuit, label: 'AI Disease Detection', color: 'text-emerald-400', bg: 'bg-emerald-50', path: '/crop-doctor' },
-        { icon: Sprout, label: 'Planting Tips', color: 'text-emerald-500', bg: 'bg-emerald-50', path: '/planting-tips' },
-        { icon: Droplets, label: 'Irrigation Tips', color: 'text-sky-500', bg: 'bg-sky-50', path: '/irrigation-tips' },
-        { icon: CalendarDays, label: 'Crop Calendar', color: 'text-indigo-500', bg: 'bg-indigo-50', path: '/crop-calendar' },
-        { icon: Bug, label: 'Pest Control', color: 'text-rose-500', bg: 'bg-rose-50', path: '/pest-control' },
+        { icon: BrainCircuit, label: t('aiDiseaseDetection'), color: 'text-emerald-400', bg: 'bg-emerald-50', path: '/crop-doctor' },
+        { icon: Sprout, label: t('plantingTips'), color: 'text-emerald-500', bg: 'bg-emerald-50', path: '/planting-tips' },
+        { icon: Droplets, label: t('irrigationTips'), color: 'text-sky-500', bg: 'bg-sky-50', path: '/irrigation-tips' },
+        { icon: CalendarDays, label: t('cropCalendar'), color: 'text-indigo-500', bg: 'bg-indigo-50', path: '/crop-calendar' },
+        { icon: Bug, label: t('pestControl'), color: 'text-rose-500', bg: 'bg-rose-50', path: '/pest-control' },
     ];
 
     return (
@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         {/* Navigation Menu */}
                         <div className="flex-1 overflow-y-auto px-4 pb-8 scrollbar-hide">
                             <div className="space-y-1">
-                                <p className="px-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3">Agricultural Intelligence</p>
+                                <p className="px-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3">{t('intelligence') || 'Agricultural Intelligence'}</p>
                                 {intelligenceItems.map((item, idx) => (
                                     <button
                                         key={idx}
@@ -98,7 +98,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             </div>
 
                             <div className="mt-8 space-y-1">
-                                <p className="px-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3">Management</p>
+                                <p className="px-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3">{t('management') || 'Management'}</p>
                                 {menuItems.map((item, idx) => (
                                     <button
                                         key={idx}
@@ -128,7 +128,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                                         <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center border border-slate-100">
                                             <Settings size={22} />
                                         </div>
-                                        <span className="text-sm font-bold text-slate-700 uppercase tracking-tight">General Settings</span>
+                                        <span className="text-sm font-bold text-slate-700 uppercase tracking-tight">{t('generalSettings')}</span>
                                     </div>
                                     <ChevronRight size={16} className="text-slate-200 transition-all" />
                                 </button>
@@ -149,7 +149,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 className="flex items-center gap-2 px-6 py-3 bg-white text-rose-500 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-rose-50 border border-slate-100 shadow-sm transition-all active:scale-95"
                             >
                                 <LogOut size={16} />
-                                Sign Out
+                                {t('signOut')}
                             </button>
                         </div>
                     </motion.div>

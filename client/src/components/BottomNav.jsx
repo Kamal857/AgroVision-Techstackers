@@ -9,7 +9,7 @@ const BottomNav = () => {
 
     const navItems = [
         { icon: Home, label: t('home'), path: '/' },
-        { icon: ClipboardList, label: 'My Jobs', path: '/jobs' },
+        { icon: ClipboardList, label: t('jobs'), path: '/jobs' },
         { icon: Bell, label: t('alerts'), path: '/notifications' },
         { icon: User, label: t('profile'), path: '/profile' },
     ];

@@ -70,7 +70,7 @@ const MyJobs = () => {
 
             {/* Pro Task List */}
             <div className="space-y-3">
-                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Focus Operations</h3>
+                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">{t('focusOperations')}</h3>
                 {tasks.map((task) => (
                     <motion.div
                         key={task.id}
@@ -78,13 +78,13 @@ const MyJobs = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         onClick={() => toggleTask(task.id)}
                         className={`p-4 rounded-2xl flex items-center gap-4 cursor-pointer transition-all border ${task.completed
-                                ? 'bg-slate-50 border-slate-100 opacity-60'
-                                : 'bg-white border-slate-100 shadow-sm hover:border-emerald-200'
+                            ? 'bg-slate-50 border-slate-100 opacity-60'
+                            : 'bg-white border-slate-100 shadow-sm hover:border-emerald-200'
                             }`}
                     >
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${task.completed
-                                ? 'bg-slate-200 text-slate-400'
-                                : 'bg-emerald-50 text-emerald-600 shadow-sm'
+                            ? 'bg-slate-200 text-slate-400'
+                            : 'bg-emerald-50 text-emerald-600 shadow-sm'
                             }`}>
                             {task.completed ? <CheckCircle size={18} /> : <Sun size={18} />}
                         </div>
@@ -96,15 +96,15 @@ const MyJobs = () => {
                             <div className="flex items-center gap-2 mt-0.5">
                                 <span className={`text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-md ${task.completed ? 'bg-slate-100 text-slate-300' : 'bg-slate-50 text-slate-400'
                                     }`}>
-                                    {task.type}
+                                    {t(task.type)}
                                 </span>
                                 <span className="text-[9px] text-slate-400 font-medium">| {task.time}</span>
                             </div>
                         </div>
 
                         <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed
-                                ? 'bg-emerald-500 border-emerald-500 text-white'
-                                : 'border-slate-100 bg-slate-50'
+                            ? 'bg-emerald-500 border-emerald-500 text-white'
+                            : 'border-slate-100 bg-slate-50'
                             }`}>
                             {task.completed && <CheckCircle size={12} />}
                         </div>
