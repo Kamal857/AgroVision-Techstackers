@@ -33,8 +33,8 @@ exports.detectCrop = async (req, res) => {
         const imageData = fs.readFileSync(imagePath);
         const base64Image = Buffer.from(imageData).toString("base64");
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        console.log("Calling Gemini API with model: gemini-1.5-flash...");
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        console.log("Calling Gemini API with model: gemini-2.5-flash...");
 
         const prompt = `Analyze this plant/crop image. 
         Identify the following:
