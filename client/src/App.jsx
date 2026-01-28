@@ -11,6 +11,8 @@ import Market from './pages/Market';
 import CalculatorPage from './pages/Calculator';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Income from './pages/Income';
 import Expense from './pages/Expense';
 import PlantingTips from './pages/PlantingTips';
@@ -74,6 +76,8 @@ const AppContent = () => {
         <Route path="/pest-control" element={<ProtectedRoute><PestControl /></ProtectedRoute>} />
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
         <Route path="/signup" element={<AuthRoute><Signup /></AuthRoute>} />
+        <Route path="/forgot-password" element={<AuthRoute><ForgotPassword /></AuthRoute>} />
+        <Route path="/resetpassword/:token" element={<AuthRoute><ResetPassword /></AuthRoute>} />
         <Route path="/jobs" element={<ProtectedRoute><MyJobs /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
