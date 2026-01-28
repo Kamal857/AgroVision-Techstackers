@@ -16,8 +16,8 @@ We leveraged a robust **Full-Stack (MERN)** architecture combined with advanced 
 
 ### **Server & Logic (Backend)**
 *   **Node.js & Express.js**: Powering a scalable and efficient RESTful API.
-*   **JWT (JSON Web Tokens)**: Implements secure, stateless user authentication.
-*   **Bcrypt**: Ensures industry-standard password encryption.
+  
+    
 
 ### **Database**
 *   **MongoDB & Mongoose**: A flexible NoSQL database structure for managing complex relationships between users, tasks, and market data.
@@ -33,13 +33,12 @@ We leveraged a robust **Full-Stack (MERN)** architecture combined with advanced 
 ### 1. AI Crop Doctor 📸
 Our flagship feature. Farmers can simply upload a photo of a potential crop disease (like a leaf spot). Our AI analyzes the visual patterns, diagnoses the specific disease with high confidence, and prescribes immediate **treatment** and **prevention** advice.
 
-### 2. Smart Agronomist Chat 💬
-A 24/7 intelligent assistant tailored for agriculture. Whether it's soil pH questions, seasonal planting advice, or fertilizer queries, the Smart Agronomist provides instant, accurate answers.
 
-### 3. Live Market Intelligence 📊
+
+### 2. Live Market Intelligence 📊
 Empowers farmers to negotiate better. We track and display real-time market prices for various crops, helping farmers decide **when** and **where** to sell for maximum profit.
 
-### 4. Precision Weather Forecasting ☁️
+### 3. Precision Weather Forecasting ☁️
 Detailed 5-day weather forecasts including temperature, humidity, and rain probability, helping farmers plan irrigation and harvesting schedules effectively.
 
 ### 5. Farm Management (My Jobs) ✅
@@ -82,7 +81,4 @@ Built with accessibility in mind, supporting both **English** and **Nepali** to 
 
 ---
 
-### 🏆 Hackathon Submission by Team Tech-Stackers
-*   **Innovation**: Combining Computer Vision with LLMs for practical agriculture.
-*   **Impact**: Directly addressing crop loss and market asymmetry.
-*   **Execution**: A fully functional, deployed MERN stack application.
+
